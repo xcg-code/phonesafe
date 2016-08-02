@@ -18,7 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.phonesafe.Config;
 import com.app.phonesafe.R;
+import com.app.phonesafe.utils.SPUtils;
 import com.app.phonesafe.utils.StreamUtils;
 import com.lidroid.xutils.HttpUtils;
 import com.lidroid.xutils.exception.HttpException;
@@ -60,8 +62,18 @@ public class SplashActivity extends Activity {
                 case UPDATE_VERSION:
                     //弹出对话框
                     showUpdateDialog();break;
+                case ENTER_HOME:
+                    enterHome();break;
+                case URL_ERROR:
+                    Toast.makeText(SplashActivity.this,"URL异常",Toast.LENGTH_SHORT).show();
+                    enterHome();break;
+                case IO_ERROR:
+                    Toast.makeText(SplashActivity.this,"IO异常",Toast.LENGTH_SHORT).show();
+                    enterHome();break;
+                case JSON_ERROR:
+                    Toast.makeText(SplashActivity.this,"JSON异常",Toast.LENGTH_SHORT).show();
+                    enterHome();break;
                 default:
-                    Toast.makeText(SplashActivity.this,"未连接到服务器",Toast.LENGTH_SHORT).show();
                     enterHome();
                     break;
 
@@ -72,6 +84,7 @@ public class SplashActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        boolean sp=SPUtils.getBoolean(getApplicationContext(),Config.OPEN_UPDATE,false);
         //初始化ui控件
         initUI();
         //初始化数据
@@ -193,7 +206,11 @@ public class SplashActivity extends Activity {
 		 * 新版本的描述信息
 		 * 服务器版本号
 		 * 新版本apk下载地址*/
-        checkVersion();
+        if(SPUtils.getBoolean(getApplicationContext(), Config.OPEN_UPDATE,false)){
+            checkVersion();
+        }else{
+            mHandler.sendEmptyMessageDelayed(ENTER_HOME,2000);
+        }
     }
 
     private void checkVersion() {
