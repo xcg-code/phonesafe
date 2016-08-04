@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,9 +19,8 @@ import android.widget.Toast;
 
 import com.app.phonesafe.Config;
 import com.app.phonesafe.R;
+import com.app.phonesafe.utils.MD5Util;
 import com.app.phonesafe.utils.SPUtils;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by 14501_000 on 2016/8/1.
@@ -119,11 +119,12 @@ public class HomeActivity extends Activity {
                 if(!TextUtils.isEmpty(psd)&& !TextUtils.isEmpty(confirm)){
                     if(psd.equals(confirm)){
                         //进入应用手机防盗模块,开启一个新的activity
-                        Intent intent = new Intent(getApplicationContext(), TestActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), SetupOverActivity.class);
                         startActivity(intent);
                         //跳转到新的界面以后需要去隐藏对话框
                         dialog.dismiss();
-
+                        psd= MD5Util.md5(psd);
+                        Log.i("666","md5:"+psd);
                         SPUtils.putString(getApplicationContext(), Config.MOBILE_SAFE_PSD, psd);
                     }else{
                         Toast.makeText(getApplicationContext(),"密码不一致",Toast.LENGTH_SHORT).show();
@@ -158,11 +159,11 @@ public class HomeActivity extends Activity {
             public void onClick(View v) {
                 TextView tv_psd= (TextView) view.findViewById(R.id.et_confirm_psd);
                 String psd=tv_psd.getText().toString();
-
+                psd=MD5Util.md5(psd);
                 if(!TextUtils.isEmpty(psd)){
                     String sp_psd=SPUtils.getString(getApplicationContext(),Config.MOBILE_SAFE_PSD,"");
                     if(sp_psd.equals(psd)){
-                        Intent intent=new Intent(HomeActivity.this,TestActivity.class);
+                        Intent intent=new Intent(HomeActivity.this,SetupOverActivity.class);
                         startActivity(intent);
                         dialog.dismiss();
                     }else{
