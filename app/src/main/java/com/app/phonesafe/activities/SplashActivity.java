@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -91,6 +92,51 @@ public class SplashActivity extends Activity {
         initData();
         //画面淡入淡出
         initAnimation();
+
+        //初始化数据库
+        initDatabase();
+    }
+
+    private void initDatabase() {
+        //1.归属地数据库拷贝
+        initAddressDB("address.db");
+    }
+
+    /**
+     * 拷贝数据库至file文件夹下
+     * @param dbName 数据库名称
+     */
+    private void initAddressDB(String dbName) {
+        //1,在files文件夹下创建同名dbName数据库文件过程
+        File files=getFilesDir();//获取/data/data//files目录
+        File file=new File(files,dbName);//创建名为dbName的文件
+        if(file.exists()){
+            return;
+        }
+        //2.输入流读取第三方资产目录下的文件
+        InputStream stream=null;
+        FileOutputStream fos=null;
+        try {
+            stream=getAssets().open(dbName);
+            //3,将读取的内容写入到指定文件夹的文件中去
+            fos=new FileOutputStream(file);
+            byte[] bs=new byte[1024];
+            int temp=-1;
+            while((temp=stream.read(bs))!=-1){
+                fos.write(bs,0,temp);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            if(stream!=null&&fos!=null){
+                try {
+                    stream.close();
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void initAnimation() {

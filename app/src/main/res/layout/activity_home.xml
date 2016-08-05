@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <TextView
+        style="@style/TitleStyle"
+        android:text="功能列表" />
+    <com.app.phonesafe.view.FocusTextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ellipsize="marquee"
+        android:marqueeRepeatLimit="marquee_forever"
+        android:padding="5dp"
+        android:singleLine="true"
+        android:text="秋天秋天悄悄过去,留下小秘密,啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊"
+        android:textSize="20dp"
+        android:textColor="#000" >
+    </com.app.phonesafe.view.FocusTextView>
+    <GridView
+        android:id="@+id/gv_home"
+        android:paddingTop="50dp"
+        android:numColumns="3"
+        android:verticalSpacing="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </GridView>
 
 </LinearLayout>

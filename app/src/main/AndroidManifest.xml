@@ -3,6 +3,24 @@
     package="com.app.phonesafe">
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+
+    <!--监听开关机权限-->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
+    <!--发送短信权限-->
+    <uses-permission android:name="android.permission.SEND_SMS"/>
+
+    <!--接收短信权限-->
+    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
+
+    <!-- //获取准确GPS坐标的权限 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!-- //获取粗略坐标的权限(网络定位时使用) -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,7 +36,30 @@
         </activity>
         <activity android:name=".activities.HomeActivity"></activity>
         <activity android:name=".activities.SettingActivity"></activity>
-        <activity android:name=".activities.TestActivity"></activity>
+        <activity android:name=".activities.SetupOverActivity"></activity>
+        <activity android:name=".activities.Setup1Activity"></activity>
+        <activity android:name=".activities.Setup2Activity"></activity>
+        <activity android:name=".activities.Setup3Activity"></activity>
+        <activity android:name=".activities.Setup4Activity"></activity>
+        <activity android:name=".activities.ContactListActivity"></activity>]
+        <activity android:name=".activities.QueryAddressActivity"></activity>
+        <activity android:name=".activities.AToolActivity"></activity>
+
+
+
+        <receiver android:name=".receiver.BootReceiver">
+            <intent-filter>
+                <!--开机发送的广播-->
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receiver.SmsReceiver">
+            <intent-filter>
+                <!--系统短信发送的广播-->
+                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

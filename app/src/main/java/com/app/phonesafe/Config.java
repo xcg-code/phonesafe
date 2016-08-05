@@ -9,4 +9,12 @@ public class Config {
 
     //  是否设置密码
     public static final String MOBILE_SAFE_PSD = "mobile_safe_psd";
+
+    //  是否设置完成
+    public static final String SETUP_OVER = "setup_over";
+
+    //  是否设置密码
+    public static final String SIM_NUMBER= "sim_number";
+    public static final String PHONE_NUMBER= "phone_number";
+    public static final String OPEN_SAFE_STATE="open_safe_state";
 }
