@@ -15,11 +15,11 @@ public class SettingClickView extends RelativeLayout {
     TextView tv_title;
     TextView tv_des;
     public SettingClickView(Context context) {
-        super(context,null);
+        this(context,null);
     }
 
     public SettingClickView(Context context, AttributeSet attrs) {
-        super(context, attrs,0);
+        this(context, attrs,0);
     }
 
     public SettingClickView(Context context, AttributeSet attrs, int defStyleAttr) {

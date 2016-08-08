@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:interpolator="@android:anim/accelerate_interpolator">
-    <!-- 移动位置，持续时间为5秒 -->
+    <!-- 移动位置，持续时间为5毫秒 -->
     <translate
         android:fromXDelta="100%"
         android:toXDelta="0"

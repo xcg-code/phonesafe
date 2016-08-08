@@ -1,8 +1,10 @@
 package com.app.phonesafe.service;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.PixelFormat;
 import android.os.Handler;
 import android.os.IBinder;
@@ -10,13 +12,16 @@ import android.os.Message;
 import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.phonesafe.Config;
 import com.app.phonesafe.R;
 import com.app.phonesafe.engine.AddressDao;
+import com.app.phonesafe.utils.SPUtils;
 
 /**
  * Created by 14501_000 on 2016/8/6.
@@ -29,7 +34,10 @@ public class AddressService extends Service{
     View toastView;
     TextView toastText;
     private String mAddress;
-
+    int[] mDrawableIds;
+    int screenHeight;
+    int screenWidth;
+    InnerOutCallReceiver mInnerOutCallReceiver;
     Handler mHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -47,6 +55,25 @@ public class AddressService extends Service{
         mPhoneStsteListener=new MyPhoneStateListener();
         tm.listen(mPhoneStsteListener,PhoneStateListener.LISTEN_CALL_STATE);
         wm= (WindowManager) getSystemService(WINDOW_SERVICE);//获取窗体对象
+
+
+        //监听拨出电话的过滤条件（加权限）
+        IntentFilter intentFilter=new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_NEW_OUTGOING_CALL);
+        //创建广播接受者
+        mInnerOutCallReceiver=new InnerOutCallReceiver();
+        registerReceiver(mInnerOutCallReceiver,intentFilter);
+
+    }
+    class InnerOutCallReceiver extends BroadcastReceiver{
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //接收到此广播后,需要显示自定义的吐司,显示播出归属地号码
+            //获取播出电话号码的字符串
+            String phone = getResultData();
+            showToast(phone);
+        }
     }
 
     @Override
@@ -94,6 +121,73 @@ public class AddressService extends Service{
         toastView=View.inflate(this, R.layout.toast_view,null);
         toastText= (TextView) toastView.findViewById(R.id.tv_toast);
 
+        toastView.setOnTouchListener(new View.OnTouchListener() {
+            private int startX;
+            private int startY;
+            //对不同的事件做不同的逻辑处理
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        startX = (int) event.getRawX();
+                        startY = (int) event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        int nowX = (int) event.getRawX();
+                        int nowY = (int) event.getRawY();
+
+                        int disX = nowX - startX;
+                        int disY = nowY - startY;
+
+                        params.x = params.x+disX;
+                        params.y = params.y+disY;
+
+                        //容错处理
+                        if(params.x<0){
+                            params.x = 0;
+                        }
+
+                        if(params.y<0){
+                            params.y=0;
+                        }
+
+                        if(params.x>screenWidth-toastView.getWidth()){
+                            params.x = screenWidth-toastView.getWidth();
+                        }
+
+                        if(params.y>screenHeight-toastView.getHeight()-22){
+                            params.y = screenHeight-toastView.getHeight()-22;
+                        }
+                        ////告知窗体吐司需要按照手势的移动,去做位置的更新
+                        wm.updateViewLayout(toastView,params);
+
+                        //重置一次其实坐标
+                        startX = (int) event.getRawX();
+                        startY = (int) event.getRawY();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        //存储位置
+                        SPUtils.putInt(getApplicationContext(),Config.LOCATION_X,params.x);
+                        SPUtils.putInt(getApplicationContext(),Config.LOCATION_Y,params.y);
+                        break;
+                }
+                return true;
+            }
+        });
+
+        //获取ToastView位置
+        params.x= SPUtils.putInt(getApplicationContext(),Config.LOCATION_X,0);
+        params.y=SPUtils.putInt(getApplicationContext(),Config.LOCATION_Y,0);
+
+        int DrawId=SPUtils.getInt(getApplicationContext(), Config.TOAST_STYLE,0);
+        //从sp中获取色值文字的索引,匹配图片,用作展示
+        mDrawableIds = new int[]{
+                R.drawable.call_locate_white,
+                R.drawable.call_locate_orange,
+                R.drawable.call_locate_blue,
+                R.drawable.call_locate_gray,
+                R.drawable.call_locate_green};
+        toastText.setBackgroundResource(mDrawableIds[DrawId]);
         //在窗体上挂在一个view(权限)
         wm.addView(toastView,params);
 
@@ -119,6 +213,9 @@ public class AddressService extends Service{
         //取消对电话状态的监听(开启服务的时候监听电话的对象)
         if(tm!=null && mPhoneStsteListener!=null){
             tm.listen(mPhoneStsteListener,PhoneStateListener.LISTEN_NONE);
+        }
+        if(mInnerOutCallReceiver!=null){
+            unregisterReceiver(mInnerOutCallReceiver);
         }
     }
 }

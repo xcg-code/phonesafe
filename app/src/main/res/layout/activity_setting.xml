@@ -25,9 +25,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </com.app.phonesafe.view.SettingItemView>
-
-
-
-
+    <com.app.phonesafe.view.SettingItemView
+        android:id="@+id/siv_rocket"
+        xmlns:phonesafe="http://schemas.android.com/apk/res/com.app.phonesafe"
+        phonesafe:destitle="开启悬浮火箭"
+        phonesafe:desoff="悬浮火箭已关闭"
+        phonesafe:deson="悬浮火箭已开启"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.app.phonesafe.view.SettingItemView>
+    <com.app.phonesafe.view.SettingClickView
+        android:id="@+id/scv_toast_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.app.phonesafe.view.SettingClickView>
+    <com.app.phonesafe.view.SettingClickView
+        android:id="@+id/scv_location"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.app.phonesafe.view.SettingClickView>
 
 </LinearLayout>

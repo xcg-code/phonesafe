@@ -52,7 +52,7 @@ public class LocationService extends Service {
 
                 //4,发送短信(添加权限)
                 SmsManager sms = SmsManager.getDefault();
-                sms.sendTextMessage("5556", null, "longitude = "+longitude+",latitude = "+latitude, null, null);
+                sms.sendTextMessage("5556", null, "longitude = " + longitude + ",latitude = " + latitude, null, null);
             }
 
             @Override

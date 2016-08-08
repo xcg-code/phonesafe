@@ -28,6 +28,14 @@ public class SPUtils  {
         SharedPreferences.Editor editor=sp.edit();
         editor.putString(key,value).commit();
     }
+    public static int putInt(Context context, String key, int value){
+        if(sp==null) {
+            sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);//(存储节点文件名称，读写方式)
+        }
+        SharedPreferences.Editor editor=sp.edit();
+        editor.putInt(key,value).commit();
+        return value;
+    }
 
     /**
      *读取boolean类型变量
@@ -47,6 +55,11 @@ public class SPUtils  {
             sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);//(存储节点文件名称，读写方式)
         }
         return sp.getString(key,defValue);
-
+    }
+    public static int getInt(Context context,String key,int defValue){
+        if(sp==null) {
+            sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);//(存储节点文件名称，读写方式)
+        }
+        return sp.getInt(key,defValue);
     }
 }
