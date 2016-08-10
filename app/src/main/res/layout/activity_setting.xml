@@ -44,5 +44,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </com.app.phonesafe.view.SettingClickView>
+    <com.app.phonesafe.view.SettingItemView
+        android:id="@+id/siv_blacknumber"
+        xmlns:phonesafe="http://schemas.android.com/apk/res/com.app.phonesafe"
+        phonesafe:destitle="通信黑名单拦截设置"
+        phonesafe:desoff="通信黑名单已关闭"
+        phonesafe:deson="通信黑名单已开启"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.app.phonesafe.view.SettingItemView>
 
 </LinearLayout>

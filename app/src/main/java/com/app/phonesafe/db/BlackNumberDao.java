@@ -128,6 +128,19 @@ public class BlackNumberDao {
         return count;
     }
 
-
-
+    /**
+     * @param phone	作为查询条件的电话号码
+     * @return	传入电话号码的拦截模式	1:短信	2:电话	3:所有	0:没有此条数据
+     */
+    public int getMode(String phone){
+        SQLiteDatabase db = blackNumberOpenHelper.getWritableDatabase();
+        int mode = 0;
+        Cursor cursor = db.query("blacknumber", new String[]{"mode"}, "phone = ?", new String[]{phone}, null, null,null);
+        if(cursor.moveToNext()){
+            mode = cursor.getInt(0);
+        }
+        cursor.close();
+        db.close();
+        return mode;
+    }
 }

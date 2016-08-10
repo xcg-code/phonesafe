@@ -5,30 +5,32 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
-
     <!--监听开关机权限-->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
-
     <!--发送短信权限-->
     <uses-permission android:name="android.permission.SEND_SMS"/>
-
     <!--接收短信权限-->
     <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-
     <!-- //获取准确GPS坐标的权限 -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <!-- //获取粗略坐标的权限(网络定位时使用) -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <!--允许振功效果-->
     <uses-permission android:name="android.permission.VIBRATE"/>
-
     <!-- 在窗体上挂在view的权限 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-
     <!--去电广播权限-->
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>
+    <!--监听来电权限-->
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <!--读取来电日志权限-->
+    <uses-permission android:name="android.permission.READ_CALL_LOG"/>
+    <!--操作来电日志权限-->
+    <uses-permission android:name="android.permission.WRITE_CALL_LOG"/>
+    <!--读取短信权限-->
+    <uses-permission android:name="android.permission.READ_SMS"/>
+    <!--操作短信权限-->
+    <uses-permission android:name="android.permission.WRITE_SMS"/>
 
     <application
         android:allowBackup="true"
@@ -60,6 +62,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar">
         </activity>
         <activity android:name=".activities.BlackNumberActivity"></activity>
+        <activity android:name=".activities.AppManageActivity"></activity>
 
 
 
@@ -80,6 +83,7 @@
         <service android:name=".service.AddressService"/>
         <service android:name=".service.LocationService"/>
         <service android:name=".service.RocketService"/>
+        <service android:name=".service.BlackNumberService"/>
 
     </application>
 

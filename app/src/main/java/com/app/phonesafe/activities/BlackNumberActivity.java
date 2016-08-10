@@ -1,6 +1,5 @@
 package com.app.phonesafe.activities;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Build;
@@ -74,7 +73,6 @@ public class BlackNumberActivity extends Activity{
         }.start();
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
     private void initUI() {
         bt_add= (Button) findViewById(R.id.bt_add);
         lv_blacknumber= (ListView) findViewById(R.id.lv_black_number_list);

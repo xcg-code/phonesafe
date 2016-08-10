@@ -11,6 +11,7 @@ import android.view.View;
 import com.app.phonesafe.Config;
 import com.app.phonesafe.R;
 import com.app.phonesafe.service.AddressService;
+import com.app.phonesafe.service.BlackNumberService;
 import com.app.phonesafe.service.RocketService;
 import com.app.phonesafe.utils.SPUtils;
 import com.app.phonesafe.utils.ServiceUtil;
@@ -24,6 +25,7 @@ public class SettingActivity extends Activity {
     SettingItemView siv_update;
     SettingItemView siv_location;
     SettingItemView siv_rocket;
+    SettingItemView siv_blacknumber;
     SettingClickView scv_toast_style;
     SettingClickView scv_location;
     private String[] mToastStyleDes;
@@ -37,20 +39,40 @@ public class SettingActivity extends Activity {
         initRocket();
         initToastStyle();
         initLocation();
+        initBlackNumber();
+    }
+
+    private void initBlackNumber() {
+        siv_blacknumber= (SettingItemView) findViewById(R.id.siv_blacknumber);
+        //对服务是否开的状态做显示
+        boolean isRunning= ServiceUtil.isRunning(this,"com.app.phonesafe.service.BlackNumberService");
+        siv_blacknumber.setText(isRunning);
+        siv_blacknumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean check=siv_blacknumber.isCheck();
+                siv_blacknumber.setText(!check);
+                if(!check){
+                    //开启服务,管理吐司
+                    startService(new Intent(getApplicationContext(), BlackNumberService.class));
+                }else{
+                    //关闭服务，取消吐司显示
+                    stopService(new Intent(getApplicationContext(),BlackNumberService.class));
+                }
+            }
+        });
     }
 
     private void initRocket() {
         siv_rocket= (SettingItemView) findViewById(R.id.siv_rocket);
-        //获取已有的开关状态，用作显示
-        boolean open_rocket=SPUtils.getBoolean(this, Config.OPEN_ROCKET,false);
-        //回显过程
-        siv_rocket.setText(open_rocket);
+        //对服务是否开的状态做显示
+        boolean isRunning= ServiceUtil.isRunning(this,"com.app.phonesafe.service.RocketService");
+        siv_rocket.setText(isRunning);
         siv_rocket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 boolean check=siv_rocket.isCheck();
                 siv_rocket.setText(!check);
-                SPUtils.putBoolean(getApplicationContext(),Config.OPEN_ROCKET,!check);
                 if(!check){
                     //开启悬浮火箭服务
                     startService(new Intent(getApplicationContext(),RocketService.class));
