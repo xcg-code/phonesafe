@@ -1,6 +1,10 @@
 package com.app.phonesafe.activities;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -9,11 +13,19 @@ import android.os.StatFs;
 import android.text.format.Formatter;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.app.phonesafe.R;
 import com.app.phonesafe.db.AppInfo;
@@ -25,13 +37,15 @@ import java.util.List;
 /**
  * Created by 14501_000 on 2016/8/9.
  */
-public class AppManageActivity  extends Activity{
+public class AppManageActivity  extends Activity implements View.OnClickListener{
     ListView lv_app;
     TextView  tv_des;
     List<AppInfo> mAppInfoList;
     List<AppInfo> mSystemList;
     List<AppInfo> mCustomerList;
     MyAdapter adapter;
+    private AppInfo appInfo;
+    PopupWindow popupWindow;
     Handler mHandler=new Handler(){
         @Override
         public void handleMessage(Message msg) {
@@ -98,8 +112,96 @@ public class AppManageActivity  extends Activity{
                 }
             }
         });
+        lv_app.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if(position==0 ||position==mCustomerList.size()+1){
+                    return;
+                }else{
+                    if(position<mCustomerList.size()+1){
+                        appInfo=mCustomerList.get(position-1);
+                    }else{
+                        appInfo=mSystemList.get(position-mCustomerList.size()-2);
+                    }
+                }
+                showPopupWindow(view);
+            }
+        });
     }
 
+    private void showPopupWindow(View view) {
+        View popupView=View.inflate(getApplicationContext(),R.layout.popupwindow,null);
+        TextView tv_uninstall= (TextView) popupView.findViewById(R.id.tv_uninstall);
+        TextView tv_start= (TextView) popupView.findViewById(R.id.tv_start);
+        TextView tv_share= (TextView) popupView.findViewById(R.id.tv_share);
+
+        tv_uninstall.setOnClickListener(this);
+        tv_start.setOnClickListener(this);
+        tv_share.setOnClickListener(this);
+
+        //透明动画
+        AlphaAnimation alphaAnimation=new AlphaAnimation(0,1);
+        alphaAnimation.setDuration(1000);
+        alphaAnimation.setFillAfter(true);
+
+        //缩放动画
+        ScaleAnimation scaleAnimation=new ScaleAnimation(0,1,0,1,
+                Animation.RELATIVE_TO_SELF,0.5f,
+                Animation.RELATIVE_TO_SELF,0.5f);
+        scaleAnimation.setDuration(1000);
+        scaleAnimation.setFillAfter(true);
+
+        //动画集合
+        AnimationSet animationSet=new AnimationSet(true);
+        animationSet.addAnimation(alphaAnimation);
+        animationSet.addAnimation(scaleAnimation);
+
+        //1.创建窗体对象，指定宽高
+        popupWindow=new PopupWindow(popupView, LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,true);
+        //2.设置透明背景
+        popupWindow.setBackgroundDrawable(new ColorDrawable());
+        //3.指定窗体位置
+        popupWindow.showAsDropDown(view,50,-view.getHeight());
+        //4.popupView执行动画
+        popupView.startAnimation(animationSet);
+    }
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()){
+            case R.id.tv_uninstall:
+                if(appInfo.isSystem){
+                    Toast.makeText(getApplicationContext(),"系统应用不能卸载",Toast.LENGTH_SHORT).show();
+                }else{
+                    Intent intent=new Intent("andriod.intent.action.DELETE");
+                    intent.addCategory("android.intent.categroy.DELETE");
+                    intent.setData(Uri.parse("package:"+appInfo.getPackageName()));
+                    startActivity(intent);
+                }
+                break;
+            case R.id.tv_start:
+                //通过桌面去开启指定包名应用
+                PackageManager pm=getPackageManager();
+                //通过Launch开启指定包名的意图,去开启应用
+                Intent launchIntent=pm.getLaunchIntentForPackage(appInfo.getPackageName());
+                if(launchIntent!=null){
+                    startActivity(launchIntent);
+                }else{
+                    Toast.makeText(getApplicationContext(),"此应用不能开启",Toast.LENGTH_SHORT).show();
+                }
+                break;
+            case R.id.tv_share:
+                //通过短信应用，向外发送短信
+                Intent intent=new Intent(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT,"分享一个应用，应用名称为:"+appInfo.getName());
+                intent.setType("text/plain");
+                startActivity(intent);
+                break;
+        }
+       if(popupWindow!=null){
+           popupWindow.dismiss();
+       }
+    }
     private void initTitle() {
         //1.获取内存可用大小,内存路径
         String path=Environment.getDataDirectory().getAbsolutePath();
@@ -125,6 +227,7 @@ public class AppManageActivity  extends Activity{
         //可用空间总大小
         return count*size;
     }
+
 
     class MyAdapter extends BaseAdapter{
         //获取数据适配器中条目类型的总数,修改成两种(纯文本,图片+文字)

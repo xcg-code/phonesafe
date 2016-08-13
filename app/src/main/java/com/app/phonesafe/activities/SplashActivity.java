@@ -2,11 +2,11 @@ package com.app.phonesafe.activities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -95,11 +95,33 @@ public class SplashActivity extends Activity {
 
         //初始化数据库
         initDatabase();
+        if(!SPUtils.getBoolean(getApplicationContext(),Config.HAS_SHORTCUT,false)){
+            //生成快捷方式
+            initShortCut();
+        }
+    }
+
+    private void initShortCut() {
+        //1.给intent维护图标，数据
+        Intent intent=new Intent("com.android.launcher.action.INSTALL_SHORTCUT");
+        intent.putExtra(Intent.EXTRA_SHORTCUT_ICON,
+                BitmapFactory.decodeResource(getResources(),R.drawable.ic_launcher));
+        intent.putExtra(Intent.EXTRA_SHORTCUT_NAME,"手机卫士");
+        //2.点击快捷方式跳转
+        Intent intent1=new Intent("android.intent.action.HOME");
+        intent1.addCategory("android.intent.category.DEFAULT");
+        intent.putExtra(Intent.EXTRA_SHORTCUT_INTENT,intent1);
+        //3.发送广播
+        sendBroadcast(intent);
+        SPUtils.putBoolean(getApplicationContext(),Config.HAS_SHORTCUT,true);
     }
 
     private void initDatabase() {
         //1.归属地数据库拷贝
         initAddressDB("address.db");
+        //2.常用号码数据库
+        initAddressDB("commonnum.db");
+        initAddressDB("antivirus.db");
     }
 
     /**

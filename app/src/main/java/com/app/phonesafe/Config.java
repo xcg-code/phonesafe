@@ -26,4 +26,6 @@ public class Config {
 
     public static final String  LOCATION_X="location_x";
     public static final String  LOCATION_Y="location_y";
+    public static final String SHOW_SYSTEM="show_system";
+    public static final String HAS_SHORTCUT="has_shortcut";
 }

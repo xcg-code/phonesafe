@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -67,12 +66,16 @@ public class HomeActivity extends Activity {
                         startActivity(new Intent(getApplicationContext(),AppManageActivity.class));
                         break;
                     case 3://进程管理
+                        startActivity(new Intent(getApplicationContext(),ProcessManageActivity.class));
                         break;
                     case 4://流量统计
+                        startActivity(new Intent(getApplicationContext(),TrafficActivity.class));
                         break;
                     case 5://手机杀毒
+                        startActivity(new Intent(getApplicationContext(),AnitVirusActivity.class));
                         break;
                     case 6://缓存清理
+                        startActivity(new Intent(getApplicationContext(),BaseClearActivity.class));
                         break;
                     case 7://高级工具
                         startActivity(new Intent(getApplicationContext(),AToolActivity.class));
@@ -126,7 +129,6 @@ public class HomeActivity extends Activity {
                         //跳转到新的界面以后需要去隐藏对话框
                         dialog.dismiss();
                         psd= MD5Util.md5(psd);
-                        Log.i("666","md5:"+psd);
                         SPUtils.putString(getApplicationContext(), Config.MOBILE_SAFE_PSD, psd);
                     }else{
                         Toast.makeText(getApplicationContext(),"密码不一致",Toast.LENGTH_SHORT).show();

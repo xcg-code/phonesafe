@@ -13,6 +13,7 @@ import com.app.phonesafe.R;
 import com.app.phonesafe.service.AddressService;
 import com.app.phonesafe.service.BlackNumberService;
 import com.app.phonesafe.service.RocketService;
+import com.app.phonesafe.service.WatchDogService;
 import com.app.phonesafe.utils.SPUtils;
 import com.app.phonesafe.utils.ServiceUtil;
 import com.app.phonesafe.view.SettingClickView;
@@ -28,6 +29,7 @@ public class SettingActivity extends Activity {
     SettingItemView siv_blacknumber;
     SettingClickView scv_toast_style;
     SettingClickView scv_location;
+    SettingItemView siv_app_lock;
     private String[] mToastStyleDes;
     private int toastStyle;
     @Override
@@ -40,6 +42,28 @@ public class SettingActivity extends Activity {
         initToastStyle();
         initLocation();
         initBlackNumber();
+        //initAppLock();
+    }
+
+    private void initAppLock() {
+        siv_app_lock= (SettingItemView) findViewById(R.id.siv_app_lock);
+        //对服务是否开的状态做显示
+        boolean isRunning= ServiceUtil.isRunning(this,"com.app.phonesafe.service.WatchDogService");
+        siv_app_lock.setText(isRunning);
+        siv_app_lock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean check=siv_app_lock.isCheck();
+                siv_app_lock.setText(!check);
+                if(!check){
+                    //开启服务,管理吐司
+                    startService(new Intent(getApplicationContext(), WatchDogService.class));
+                }else{
+                    //关闭服务，取消吐司显示
+                    stopService(new Intent(getApplicationContext(),WatchDogService.class));
+                }
+            }
+        });
     }
 
     private void initBlackNumber() {

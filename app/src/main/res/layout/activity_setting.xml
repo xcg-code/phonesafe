@@ -53,5 +53,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </com.app.phonesafe.view.SettingItemView>
+    <com.app.phonesafe.view.SettingItemView
+        android:id="@+id/siv_app_lock"
+        xmlns:phonesafe="http://schemas.android.com/apk/res/com.app.phonesafe"
+        phonesafe:destitle="程序锁设置"
+        phonesafe:deson="程序锁已开启"
+        phonesafe:desoff="程序锁已关闭"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </com.app.phonesafe.view.SettingItemView>
 
 </LinearLayout>
